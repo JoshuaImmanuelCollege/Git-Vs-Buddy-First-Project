@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monthly Calendar</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 30px;
+    }
+    table {
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 10px;
+      width: 50px;
+      height: 50px;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    caption {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Monthly Calendar</h1>
+
+  <label for="month">Month (1-12): </label>
+  <input type="number" id="month" min="1" max="12">
+  <label for="year">Year: </label>
+  <input type="number" id="year" min="1900" max="2100">
+  <button onclick="generateCalendar()">Generate</button>
+
+  <div id="calendar"></div>
+
+  <script>
+    function generateCalendar() {
+      const month = parseInt(document.getElementById('month').value) - 1; // 0-indexed
+      const year = parseInt(document.getElementById('year').value);
+
+      if (isNaN(month) || isNaN(year) || month < 0 || month > 11) {
+        alert("Please enter a valid month (1-12) and year.");
+        return;
+      }
+
+      const calendarDiv = document.getElementById('calendar');
+      calendarDiv.innerHTML = ''; // Clear previous calendar
+
+      const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const date = new Date(year, month, 1);
+      const firstDay = date.getDay();
+      const monthName = date.toLocaleString('default', { month: 'long' });
+
+      // Get total days in month
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      let table = '<table>';
+      table += `<caption>${monthName} ${year}</caption>`;
+      table += '<tr>' + daysOfWeek.map(day => `<th>${day}</th>`).join('') + '</tr><tr>';
+
+      // Fill empty cells for days before first day of month
+      for (let i = 0; i < firstDay; i++) {
+        table += '<td></td>';
+      }
+
+      for (let day = 1; day <= totalDays; day++) {
+        table += `<td>${day}</td>`;
+        if ((firstDay + day) % 7 === 0) {
+          table += '</tr><tr>';
+        }
+      }
+
+      table += '</tr></table>';
+      calendarDiv.innerHTML = table;
+    }
+  </script>
+</body>
+</html>
